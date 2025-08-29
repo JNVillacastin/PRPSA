@@ -90,7 +90,7 @@
       color: #007bff;
       font-weight: bold;
       margin-top: 20px;
-      min-height: 1.2em; /* keeps space reserved */
+      min-height: 1.2em;
     }
     #welcomePage {
       text-align: center;
@@ -126,16 +126,42 @@
     #restartBtn:hover {
       background-color: #0056b3;
     }
+    .footnote {
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+      margin-top: 40px;
+    }
+    /* Smaller legend style */
+    #legend {
+      max-width: 600px;
+      margin: 20px auto 0 auto;
+      font-size: 14px;
+      color: #003366;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      align-items: center;
+    }
+    #legend .color-box {
+      width: 16px;
+      height: 16px;
+      background-color: rgba(0, 123, 255, 0.25);
+      border: 1px solid rgba(0, 123, 255, 1);
+      border-radius: 3px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1> Modified Personal Report of Public Speaking Anxiety (PRPSA) </h1>
-    <h3> Adopted from McCroskey (1970) for COMG 251 students. Modified by Villacastin, J.N. & Song, C. (2025) </h3>
+    <h1>Modified Personal Report of Public Speaking Anxiety (PRPSA)</h1>
 
     <div id="welcomePage">
-      <p>Welcome to the PRPSA survey.<br>
-         This survey measures your public speaking anxiety and points at what stage of the speech preparation process you most feel the onset of this anxiety. 
+      <p>Welcome to the PRPSA survey.<br><br>
+         This survey measures your public speaking anxiety and points at what stage of the speech preparation process you most feel the onset of this anxiety. The stages are based on O'Hair et al.'s (2022) work on the four stages of public speaking anxiety — <strong>pre-preparation</strong> (knowing you will give a speech), <strong>preparation</strong> (choosing a topic, writing an outline, practicing, etc.), <strong>pre-performance</strong> (moments before the speech), <strong>performance</strong> (actual speech).<br><br>
          Please answer all questions honestly.<br><br>
          Click "Next" when you are ready to begin.
       </p>
@@ -147,60 +173,70 @@
       <div class="options" id="optionsContainer"></div>
       <div class="navigation">
         <button onclick="goBack()" id="prevBtn">Previous</button>
-        <button onclick="submitAnswer()" id="nextBtn">Next</button>
       </div>
       <div id="reminder"></div>
       <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
     </div>
 
     <div id="result" class="result"></div>
+
+    <div id="legend" style="display:none;">
+      <div><span class="color-box"></span>Blue area = Your level of anxiety in each stage</div>
+      <div><strong>Score Interpretation:</strong> High ≥ 132 | Moderate 98-131 | Low ≤ 97</div>
+    </div>
+
     <canvas id="radarChart" width="400" height="400" style="display:none;"></canvas>
     <button id="restartBtn" style="display:none;">Take survey again</button>
+
+    <!-- Footnote -->
+    <p class="footnote">
+      Adapted from McCroskey (1970). Measures of communication-bound anxiety. <em>Speech Monographs, 37</em>, 269-277.<br>
+      Modified by Villacastin, J.N. & Song, C. (2025) for COMG 251 students from the University of Hawai'i at Mānoa.
+    </p>
   </div>
 
   <script>
     const questions = [
-      "While preparing for giving a speech, I feel tense and nervous.",
-      "I feel tense when I see the words “speech” and “public speech” on a course outline when studying.",
-      "My thoughts become confused and jumbled when I am giving a speech.",
-      "Right after giving a speech I feel that I have had a pleasant experience.",
-      "I get anxious when I think about a speech coming up.",
-      "I have no fear of giving a speech.",
-      "Although I am nervous just before starting a speech, I soon settle down after starting and feel calm and comfortable.",
-      "I look forward to giving a speech.",
-      "When the instructor announces a speaking assignment in class, I can feel myself getting tense.",
-      "My hands tremble when I am giving a speech.",
-      "I feel relaxed while giving a speech.",
-      "I enjoy preparing for a speech.",
-      "I am in constant fear of forgetting what I prepared to say.",
-      "After giving my speech, I get anxious if someone asks me something about my topic that I don’t know.",
-      "Before delivering my speech, I face the prospect of giving my speech with confidence.",
-      "I feel that I am in complete possession of myself while giving a speech.",
-      "My mind is clear when giving a speech.",
-      "I do not dread giving a speech.",
-      "I perspire just before starting a speech.",
-      "My heart beats very fast just as I start a speech.",
-      "I experience considerable anxiety while sitting in the room just before my speech starts.",
-      "Certain parts of my body feel very tense and rigid while giving a speech.",
-      "Realizing that only a little time remains in a speech makes me very tense and anxious.",
-      "While giving a speech, I know I can control my feelings of tension and stress.",
-      "I breathe faster just before starting a speech.",
-      "I feel comfortable and relaxed in the hour or so just before giving a speech.",
-      "I do poorer on speeches because I am anxious.",
-      "I feel anxious when the teacher announces the date of a speaking assignment.",
-      "When I make a mistake while giving a speech, I find it hard to concentrate on the parts that follow.",
-      "During an important speech I experience a feeling of helplessness building up inside me.",
-      "I have trouble falling asleep the night before a speech.",
-      "My heart beats very fast while I present a speech.",
-      "I feel anxious while waiting to give my speech.",
-      "While giving a speech, I get so nervous I forget facts I really know."
+      "I get nervous when I think about speaking in front of a group.",
+      "I have trouble sleeping the night before a speech.",
+      "I worry about forgetting what I want to say during a speech.",
+      "I feel confident when giving a speech.",
+      "I get anxious just thinking about giving a speech.",
+      "I find myself worrying about a speech days before it happens.",
+      "I feel tense and nervous while waiting to speak.",
+      "Even when I am well prepared, I feel anxious about giving a speech.",
+      "Knowing I have to give a speech makes me feel stressed.",
+      "My mind goes blank during a speech.",
+      "I feel calm when delivering a speech.",
+      "I avoid classes or situations where I might have to speak in front of others.",
+      "I feel overwhelmed right before starting a speech.",
+      "I am afraid the audience will not understand me.",
+      "I get shaky hands or a shaky voice before a speech.",
+      "I feel like my heart is racing when I begin a speech.",
+      "I wish I could avoid giving speeches altogether.",
+      "I find it difficult to concentrate before speaking.",
+      "I feel relaxed before giving a speech.",
+      "I get upset when I know I’ll have to give a speech.",
+      "My thoughts become jumbled during a speech.",
+      "I feel in control when I give a speech.",
+      "I get distracted easily during a speech.",
+      "I worry about looking foolish during a speech.",
+      "I get headaches or feel physically ill before a speech.",
+      "I would do almost anything to avoid giving a speech.",
+      "I rehearse over and over but still feel unprepared.",
+      "I feel like I’ll embarrass myself during the speech.",
+      "I get tongue-tied in front of an audience.",
+      "I struggle to breathe evenly when speaking publicly.",
+      "The closer it gets to the speech, the worse I feel.",
+      "I feel composed when I speak publicly.",
+      "I lose track of my main points when speaking.",
+      "I worry people are judging how nervous I look.",
+      "I feel helpless when speaking in front of others."
     ];
 
-    // Scoring (step1 and step2)
     const step1Indexes = [0,1,2,4,8,9,12,13,18,19,20,21,22,23,26,27,28,29,30,31,32,33];
     const step2Indexes = [3,5,6,7,10,11,14,15,16,17,24,25];
 
-    // Subscales
     const subscales = {
       Preprep: [1, 4, 5, 7, 8, 27],
       Prep: [0, 11, 17],
@@ -208,7 +244,6 @@
       Perf: [2,3,9,10,12,13,15,16,19,21,22,23,26,28,29,31,33]
     };
 
-    // Label map for radar chart
     const labelMap = {
       Preprep: "Pre-preparation",
       Prep: "Preparation",
@@ -230,34 +265,24 @@
           answers[currentQuestion] = i;
           [...container.children].forEach(b => b.style.opacity = "1");
           btn.style.opacity = "0.6";
-          submitAnswer();  // auto-next on click
+          if (currentQuestion === questions.length - 1) {
+            calculateResults();
+          } else {
+            currentQuestion++;
+            renderQuestion();
+          }
         };
         if (answers[currentQuestion] === i) btn.style.opacity = "0.6";
         container.appendChild(btn);
       }
       document.getElementById("prevBtn").disabled = currentQuestion === 0;
-      document.getElementById("nextBtn").textContent = currentQuestion === questions.length - 1 ? "Finish" : "Next";
       updateProgressBar();
 
-      // Show or clear reminder text when on last question
       const reminder = document.getElementById("reminder");
       if (currentQuestion === questions.length - 1) {
         reminder.textContent = "You are on the last question.";
       } else {
         reminder.textContent = "";
-      }
-    }
-
-    function submitAnswer() {
-      if (answers[currentQuestion] == null) {
-        alert("Please select an option before continuing.");
-        return;
-      }
-      if (currentQuestion === questions.length - 1) {
-        calculateResults();
-      } else {
-        currentQuestion++;
-        renderQuestion();
       }
     }
 
@@ -269,105 +294,125 @@
     }
 
     function updateProgressBar() {
-      const percent = (currentQuestion / questions.length) * 100;
-      document.getElementById("progressFill").style.width = `${percent}%`;
+      const progressPercent = ((currentQuestion) / questions.length) * 100;
+      document.getElementById("progressFill").style.width = `${progressPercent}%`;
     }
 
     function calculateResults() {
-      const step1 = step1Indexes.reduce((sum, i) => sum + answers[i], 0);
-      const step2 = step2Indexes.reduce((sum, i) => sum + answers[i], 0);
-      const prpsa = 72 - step2 + step1;
-
-      let interpretation = "";
-      if (prpsa < 98) interpretation = "Low Public Speaking Anxiety";
-      else if (prpsa <= 131) interpretation = "Moderate Public Speaking Anxiety";
-      else interpretation = "High Public Speaking Anxiety";
-
-      const subscaleScores = {};
-      for (const [key, indices] of Object.entries(subscales)) {
-        const label = labelMap[key];
-        subscaleScores[label] = indices.reduce((sum, i) => sum + answers[i], 0) / indices.length;
+      if (answers.includes(null)) {
+        alert("Please answer all questions.");
+        return;
       }
 
+      // Show result container and hide quiz
       document.getElementById("quiz").style.display = "none";
+      document.getElementById("legend").style.display = "flex";
+      document.getElementById("radarChart").style.display = "block";
+      document.getElementById("restartBtn").style.display = "block";
+
+      // Total score
+      const totalScore = answers.reduce((a,b) => a + b, 0);
+
+      // Calculate subscale sums
+      const scores = {};
+      for (const [key, indices] of Object.entries(subscales)) {
+        scores[key] = indices.reduce((sum, idx) => sum + answers[idx], 0);
+      }
+
+      // Calculate max for radar chart to normalize
+      const maxPossiblePerSubscale = {};
+      for (const key in subscales) {
+        maxPossiblePerSubscale[key] = subscales[key].length * 5;
+      }
+
+      // Prepare data for radar chart
+      const labels = Object.keys(scores).map(k => labelMap[k]);
+      const dataValues = Object.keys(scores).map(k => (scores[k]/maxPossiblePerSubscale[k]) * 100);
+
+      // Interpretation text
+      let interpretation = "";
+      if (totalScore >= 132) interpretation = "High public speaking anxiety.";
+      else if (totalScore >= 98) interpretation = "Moderate public speaking anxiety.";
+      else interpretation = "Low public speaking anxiety.";
+
       document.getElementById("result").innerHTML = `
-        <h3>Your PRPSA Score: ${prpsa}</h3>
-        <p>Interpretation: <strong>${interpretation}</strong></p>
-        <p><em>(Mean = 114.6, SD = 17.2, Range: 34–170)</em></p>
+        <strong>Total Score:</strong> ${totalScore} <br>
+        <strong>Interpretation:</strong> ${interpretation}
       `;
 
-      drawRadarChart(subscaleScores);
-
-      // Show the restart button
-      document.getElementById("restartBtn").style.display = "block";
-    }
-
-    function drawRadarChart(scores) {
+      // Create radar chart
       const ctx = document.getElementById("radarChart").getContext("2d");
-      document.getElementById("radarChart").style.display = "block";
-
-      // Destroy existing chart instance if any to avoid duplicates
-      if (window.radarChartInstance) {
+      if(window.radarChartInstance) {
         window.radarChartInstance.destroy();
       }
-
       window.radarChartInstance = new Chart(ctx, {
         type: 'radar',
         data: {
-          labels: Object.keys(scores),
+          labels: labels,
           datasets: [{
-            label: 'Average Rating',
-            data: Object.values(scores),
-            backgroundColor: 'rgba(0, 123, 255, 0.2)',
-            borderColor: '#007bff',
-            pointBackgroundColor: '#007bff',
-            borderWidth: 2
+            label: "Your anxiety level (%)",
+            data: dataValues,
+            fill: true,
+            backgroundColor: 'rgba(0, 123, 255, 0.25)',
+            borderColor: 'rgba(0, 123, 255, 1)',
+            pointBackgroundColor: 'rgba(0, 123, 255, 1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(0, 123, 255, 1)'
           }]
         },
         options: {
           scales: {
             r: {
-              suggestedMin: 1,
-              suggestedMax: 5,
+              beginAtZero: true,
+              max: 100,
               ticks: {
-                stepSize: 1
+                stepSize: 20,
+                color: '#003366',
+                backdropColor: 'transparent'
+              },
+              pointLabels: {
+                color: '#003366',
+                font: {
+                  size: 14,
+                  weight: 'bold'
+                }
+              },
+              grid: {
+                color: '#a6c8ff'
               }
             }
           },
           plugins: {
-            legend: { position: 'top' },
-            title: {
-              display: true,
-              text: 'Subscale Breakdown (1 = Low Anxiety, 5 = High Anxiety)'
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: ctx => `${ctx.formattedValue}% anxiety`
+              }
             }
           }
         }
       });
     }
 
-    function restartSurvey() {
-      // Reset state
-      currentQuestion = 0;
-      answers = new Array(questions.length).fill(null);
-
-      // Hide results and chart
-      document.getElementById("result").innerHTML = "";
-      document.getElementById("radarChart").style.display = "none";
-      document.getElementById("restartBtn").style.display = "none";
-
-      // Show quiz and reset UI
+    document.getElementById("startBtn").onclick = () => {
+      document.getElementById("welcomePage").style.display = "none";
       document.getElementById("quiz").style.display = "block";
       renderQuestion();
-    }
+    };
 
-    // Start app
-    document.getElementById('startBtn').addEventListener('click', () => {
-      document.getElementById('welcomePage').style.display = 'none';
-      document.getElementById('quiz').style.display = 'block';
+    document.getElementById("restartBtn").onclick = () => {
+      answers = new Array(questions.length).fill(null);
+      currentQuestion = 0;
+      document.getElementById("result").textContent = "";
+      document.getElementById("quiz").style.display = "block";
+      document.getElementById("legend").style.display = "none";
+      document.getElementById("radarChart").style.display = "none";
+      document.getElementById("restartBtn").style.display = "none";
       renderQuestion();
-    });
-
-    document.getElementById("restartBtn").addEventListener("click", restartSurvey);
+    };
   </script>
 </body>
 </html>
