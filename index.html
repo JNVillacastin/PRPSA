@@ -7,9 +7,9 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #e6f0ff;
+      background: #e6f9e6;
       padding: 20px;
-      color: #003366;
+      color: #004d00;
     }
     .container {
       max-width: 800px;
@@ -17,7 +17,7 @@
       background: white;
       padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 51, 102, 0.2);
+      box-shadow: 0 0 15px rgba(0, 77, 0, 0.2);
     }
     .question {
       font-size: 20px;
@@ -37,13 +37,13 @@
       font-size: 16px;
       border: none;
       border-radius: 5px;
-      background-color: #007bff;
+      background-color: #28a745;
       color: white;
       cursor: pointer;
       transition: opacity 0.3s ease;
     }
     .options button:hover {
-      background-color: #0056b3;
+      background-color: #1e7e34;
     }
     .navigation {
       display: flex;
@@ -52,7 +52,7 @@
     .navigation button {
       padding: 10px 20px;
       font-size: 16px;
-      background-color: #0056b3;
+      background-color: #1e7e34;
       color: white;
       border: none;
       border-radius: 5px;
@@ -62,14 +62,14 @@
     }
     .progress-bar {
       height: 20px;
-      background: #cce0ff;
+      background: #ccf2cc;
       margin-top: 20px;
       border-radius: 10px;
       overflow: hidden;
     }
     .progress-fill {
       height: 100%;
-      background: #007bff;
+      background: #28a745;
       width: 0%;
       transition: width 0.3s ease-in-out;
     }
@@ -87,7 +87,7 @@
     }
     #reminder {
       text-align: center;
-      color: #007bff;
+      color: #28a745;
       font-weight: bold;
       margin-top: 20px;
       min-height: 1.2em;
@@ -102,20 +102,20 @@
     #welcomePage button {
       padding: 12px 30px;
       font-size: 18px;
-      background-color: #007bff;
+      background-color: #28a745;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
     }
     #welcomePage button:hover {
-      background-color: #0056b3;
+      background-color: #1e7e34;
     }
     #restartBtn {
       margin: 20px auto;
       padding: 12px 30px;
       font-size: 18px;
-      background-color: #007bff;
+      background-color: #28a745;
       color: white;
       border: none;
       border-radius: 8px;
@@ -124,7 +124,7 @@
       max-width: 220px;
     }
     #restartBtn:hover {
-      background-color: #0056b3;
+      background-color: #1e7e34;
     }
     .footnote {
       font-size: 12px;
@@ -137,7 +137,7 @@
       max-width: 600px;
       margin: 20px auto 0 auto;
       font-size: 14px;
-      color: #003366;
+      color: #004d00;
       display: flex;
       justify-content: center;
       gap: 20px;
@@ -146,8 +146,8 @@
     #legend .color-box {
       width: 16px;
       height: 16px;
-      background-color: rgba(0, 123, 255, 0.25);
-      border: 1px solid rgba(0, 123, 255, 1);
+      background-color: rgba(40, 167, 69, 0.25);
+      border: 1px solid rgba(40, 167, 69, 1);
       border-radius: 3px;
       display: inline-block;
       vertical-align: middle;
@@ -181,7 +181,7 @@
     <div id="result" class="result"></div>
 
     <div id="legend" style="display:none;">
-      <div><span class="color-box"></span>Blue area = Your level of anxiety in each stage</div>
+      <div><span class="color-box"></span>Green area = Your level of anxiety in each stage</div>
       <div><strong>Score Interpretation:</strong> High ≥ 132 | Moderate 98-131 | Low ≤ 97</div>
     </div>
 
@@ -304,32 +304,24 @@
         return;
       }
 
-      // Show result container and hide quiz
       document.getElementById("quiz").style.display = "none";
       document.getElementById("legend").style.display = "flex";
       document.getElementById("radarChart").style.display = "block";
       document.getElementById("restartBtn").style.display = "block";
 
-      // Total score
       const totalScore = answers.reduce((a,b) => a + b, 0);
-
-      // Calculate subscale sums
       const scores = {};
       for (const [key, indices] of Object.entries(subscales)) {
         scores[key] = indices.reduce((sum, idx) => sum + answers[idx], 0);
       }
-
-      // Calculate max for radar chart to normalize
       const maxPossiblePerSubscale = {};
       for (const key in subscales) {
         maxPossiblePerSubscale[key] = subscales[key].length * 5;
       }
 
-      // Prepare data for radar chart
       const labels = Object.keys(scores).map(k => labelMap[k]);
       const dataValues = Object.keys(scores).map(k => (scores[k]/maxPossiblePerSubscale[k]) * 100);
 
-      // Interpretation text
       let interpretation = "";
       if (totalScore >= 132) interpretation = "High public speaking anxiety.";
       else if (totalScore >= 98) interpretation = "Moderate public speaking anxiety.";
@@ -340,11 +332,8 @@
         <strong>Interpretation:</strong> ${interpretation}
       `;
 
-      // Create radar chart
       const ctx = document.getElementById("radarChart").getContext("2d");
-      if(window.radarChartInstance) {
-        window.radarChartInstance.destroy();
-      }
+      if(window.radarChartInstance) window.radarChartInstance.destroy();
       window.radarChartInstance = new Chart(ctx, {
         type: 'radar',
         data: {
@@ -353,12 +342,12 @@
             label: "Your anxiety level (%)",
             data: dataValues,
             fill: true,
-            backgroundColor: 'rgba(0, 123, 255, 0.25)',
-            borderColor: 'rgba(0, 123, 255, 1)',
-            pointBackgroundColor: 'rgba(0, 123, 255, 1)',
+            backgroundColor: 'rgba(40, 167, 69, 0.25)',
+            borderColor: 'rgba(40, 167, 69, 1)',
+            pointBackgroundColor: 'rgba(40, 167, 69, 1)',
             pointBorderColor: '#fff',
             pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgba(0, 123, 255, 1)'
+            pointHoverBorderColor: 'rgba(40, 167, 69, 1)'
           }]
         },
         options: {
@@ -368,29 +357,25 @@
               max: 100,
               ticks: {
                 stepSize: 20,
-                color: '#003366',
+                color: '#004d00',
                 backdropColor: 'transparent'
               },
               pointLabels: {
-                color: '#003366',
+                color: '#004d00',
                 font: {
                   size: 14,
                   weight: 'bold'
                 }
               },
               grid: {
-                color: '#a6c8ff'
+                color: '#a6dba6'
               }
             }
           },
           plugins: {
-            legend: {
-              display: false
-            },
+            legend: { display: false },
             tooltip: {
-              callbacks: {
-                label: ctx => `${ctx.formattedValue}% anxiety`
-              }
+              callbacks: { label: ctx => `${ctx.formattedValue}% anxiety` }
             }
           }
         }
